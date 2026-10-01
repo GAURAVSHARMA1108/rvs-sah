@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RVS SAH | Rajasthan Portal Automation</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"></noscript>
+</head>
+<body>
+
+  <!-- Top Accent Bar -->
+  <div class="top-accent-line"></div>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="brand-logo" title="RVS SAH">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          <circle cx="12" cy="9" r="2"></circle>
+          <path d="M9 14h6"></path>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title-wrap">
+          <h1 class="brand-title">RVS SAH</h1>
+          <span class="badge-portal">Live Portal</span>
+        </div>
+        <p class="brand-subtitle" id="brandSubtitle">Student Add Helper &bull; Rajasthan Portal Automation</p>
+      </div>
+    </div>
+
+    <!-- Header Status & Action Controls -->
+    <div class="header-actions">
+      <!-- Live School Auth Pill -->
+      <div class="auth-status-pill" id="headerAuthPill">
+        <span class="pulse-dot" id="statusPulseDot"></span>
+        <span id="headerStatusText" class="auth-status-text">Disconnected</span>
+      </div>
+
+      <!-- Quick Switch School (Visible when logged in) -->
+      <button class="btn btn-ghost btn-sm" id="btnSwitchSchool" onclick="logoutSession()" style="display: none;" title="Sign out and switch school">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Sign Out</span>
+      </button>
+
+      <!-- Toggle Login Card Button (When logged out) -->
+      <button class="btn btn-secondary btn-sm" id="btnToggleLogin" onclick="toggleLoginCard()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span id="loginBtnLabel">School Login</span>
+      </button>
+
+      <!-- Activity Drawer Trigger -->
+      <button class="btn btn-outline btn-sm btn-activity-toggle" onclick="toggleActivityDrawer()" title="View live background logs and API audits">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span>Activity Log</span>
+        <span class="counter-badge" id="activityBadgeCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Login Section: Clean Collapsible Header Card -->
+  <section class="login-section" id="loginSection">
+    <div class="login-card">
+      <div class="login-card-header">
+        <div class="login-header-info">
+          <div class="login-heading">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Rajasthan PSP School Authentication</span>
+          </div>
+          <p class="login-desc">Credentials are authenticated directly against the live Rajasthan government portal in the background.</p>
+        </div>
+        <button class="close-card-btn" onclick="toggleLoginCard()" title="Close login panel">&times;</button>
+      </div>
+
+      <!-- Real Feedback Alert Box -->
+      <div id="loginFeedbackBox" class="feedback-banner" style="display: none;">
+        <div class="feedback-icon" id="feedbackIcon">&#9432;</div>
+        <div class="feedback-content" id="loginFeedbackText"></div>
+      </div>
+
+      <!-- Login Form Inputs -->
+      <div class="login-inputs-row" id="loginInputsRow">
+        <div class="input-field">
+          <label for="loginUsername">School PSP Code</label>
+          <div class="input-icon-wrap">
+            <svg class="field-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <input type="text" id="loginUsername" placeholder="e.g. P25814 or numeric ID" autocomplete="username">
+          </div>
+        </div>
+
+        <div class="input-field">
+          <label for="loginPassword">School Password</label>
+          <div class="input-icon-wrap">
+            <svg class="field-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input type="password" id="loginPassword" placeholder="Enter school password" autocomplete="current-password">
+          </div>
+        </div>
+
+        <div class="input-field captcha-field">
+          <label>Live Portal Captcha</label>
+          <div class="captcha-interactive-group">
+            <div class="captcha-box" id="captchaBox" title="Live Captcha from Rajasthan PSP server">
+              <span id="captchaLoadingText" class="captcha-loading">Loading...</span>
+              <img id="captchaImg" src="" alt="Captcha" style="display: none;">
+            </div>
+            <button class="btn-icon-refresh" onclick="refreshCaptcha()" title="Fetch fresh Captcha image" type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+            </button>
+            <input type="text" id="loginCaptcha" class="captcha-input" placeholder="Captcha" autocomplete="off" maxlength="10">
+          </div>
+        </div>
+
+        <div class="login-action-field">
+          <button class="btn btn-primary btn-submit-login" id="btnSubmitLogin" onclick="submitPortalLogin()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+            <span>Authenticate & Load Portal</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Authenticated Strip (Shown when logged in) -->
+      <div class="authenticated-strip" id="authenticatedStrip" style="display: none;">
+        <div class="auth-strip-info">
+          <div class="auth-check-circle">✓</div>
+          <div>
+            <div class="auth-strip-title">Successfully Authenticated</div>
+            <div class="auth-strip-details">
+              Active School Code: <strong id="authSchoolUser">--</strong> &bull; Loaded Profile Entry Workspace
+            </div>
+          </div>
+        </div>
+        <div class="auth-strip-actions">
+          <button class="btn btn-secondary btn-sm" onclick="logoutSession()">Switch / Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky Controls & Operations Ribbon -->
+  <section class="controls-ribbon">
+    <!-- Left: Data Query Selectors -->
+    <div class="ribbon-query-cluster">
+      <div class="select-cluster-item">
+        <label for="sessionSelect">Session</label>
+        <div class="select-wrapper">
+          <select id="sessionSelect" class="styled-select">
+            <option value="">-- Waiting for Login --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="select-cluster-item">
+        <label for="classSelect">Class</label>
+        <div class="select-wrapper">
+          <select id="classSelect" class="styled-select">
+            <option value="">-- Waiting for Login --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="query-actions">
+        <button class="btn btn-primary btn-sm" id="btnLoadStudents" onclick="submitViewStudents()" title="Trigger View on live portal and extract student records">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span>Fetch Students</span>
+        </button>
+
+        <button class="btn btn-icon-only btn-sm" onclick="fetchDropdownOptions()" title="Sync Dropdown Options from Portal">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+        </button>
+
+        <button class="btn btn-icon-only btn-sm" onclick="detectStudentTable()" title="Detect existing student table on portal page">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="21" x2="9" y2="9"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Table Filter & Export Toolbar -->
+    <div class="ribbon-export-cluster">
+      <!-- Search filter -->
+      <div class="search-box-wrap">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="tableSearchInput" class="search-input" placeholder="Quick filter students..." oninput="filterTable()">
+      </div>
+
+      <!-- Selection Badge -->
+      <div class="selection-pill" title="Selected student records for export">
+        <span class="selection-indicator"></span>
+        <span>Selected: <strong id="selectedCount">0</strong> / <span id="totalRowCount">0</span></span>
+      </div>
+
+      <button class="btn btn-ghost btn-sm" id="btnSelectAll" onclick="toggleSelectAll()">
+        <span id="selectAllBtnText">Select All</span>
+      </button>
+
+      <!-- Delete Selected Rows Action -->
+      <button class="btn btn-danger-outline btn-sm" id="btnDeleteSelected" onclick="deleteSelectedRows()" disabled title="Delete selected student rows from table & Excel download">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        <span id="deleteSelectedBtnText">Delete</span>
+      </button>
+
+      <!-- Column Selection Badge & Actions (Excel style) -->
+      <div class="col-selection-pill" id="colSelectionPill" style="display: none;" title="Selected table columns">
+        <span class="col-selection-indicator"></span>
+        <span>Cols: <strong id="selectedColCount">0</strong></span>
+      </div>
+
+      <button class="btn btn-danger-outline btn-sm" id="btnDeleteSelectedCols" onclick="deleteSelectedColumns()" style="display: none;" title="Delete selected column(s) from table & Excel download">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        <span id="deleteSelectedColsBtnText">Delete Col(s)</span>
+      </button>
+
+      <button class="btn btn-secondary btn-sm" id="btnCopySelectedCols" onclick="copySelectedColumns()" style="display: none;" title="Copy selected column(s) data to clipboard">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span>Copy Col(s)</span>
+      </button>
+
+      <button class="btn btn-ghost btn-sm" id="btnDeselectCols" onclick="deselectAllColumns()" style="display: none;" title="Clear column selection">
+        <span>Clear Cols</span>
+      </button>
+
+      <!-- Restore Table Action (Visible only when customized) -->
+      <button class="btn btn-ghost btn-sm btn-restore" id="btnRestoreTable" onclick="restoreOriginalTable()" style="display: none;" title="Restore all deleted rows and columns to original portal state">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="1 4 1 10 7 10"></polyline>
+          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+        </svg>
+        <span>Restore All</span>
+      </button>
+
+      <div class="export-actions-group">
+        <button class="btn btn-outline btn-sm" id="btnDeepScrape" onclick="deepScrapeSelected()" disabled title="Scrape full profile details for selected students">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          <span>Deep Scrape</span>
+        </button>
+
+        <button class="btn btn-secondary btn-sm" id="btnCopyTsv" onclick="copyToClipboard()" disabled title="Copy selected student rows to clipboard (Excel TSV formatted)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy</span>
+        </button>
+
+        <button class="btn btn-primary btn-sm btn-excel" id="btnExportExcel" onclick="exportToExcel()" disabled title="Download formatted Excel (.xlsx) file with Signal Blue headers">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Export Excel</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hero Student Records Workspace (Dominates Viewport) -->
+  <main class="hero-workspace">
+    <div class="table-card">
+      <!-- Empty State View -->
+      <div class="table-empty-state" id="emptyState">
+        <div class="empty-state-badge">LIVE REPOSITORY</div>
+        <div class="empty-illustration">
+          <div class="empty-icon-circle">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+        </div>
+        <h2 class="empty-title">No Student Records Loaded Yet</h2>
+        <p class="empty-subtitle">Records are extracted directly in real time from Rajasthan PSP portal. Strictly zero simulated or mock data.</p>
+        
+        <div class="empty-steps-card">
+          <div class="empty-step">
+            <div class="step-badge">1</div>
+            <div class="step-text">Sign in above with your <b>School PSP Code & Password</b>.</div>
+          </div>
+          <div class="empty-step">
+            <div class="step-badge">2</div>
+            <div class="step-text">Select <b>Academic Session</b> and <b>Class</b> from the synced dropdowns.</div>
+          </div>
+          <div class="empty-step">
+            <div class="step-badge">3</div>
+            <div class="step-text">Click <b>"Fetch Students"</b> to automatically populate the real data grid.</div>
+          </div>
+        </div>
+
+        <div class="live-status-callout">
+          <strong>Current Portal Status:</strong>
+          <span id="emptyStateReason">Waiting for school credentials to initialize portal session.</span>
+        </div>
+      </div>
+
+      <!-- Real Student Records Data Table -->
+      <div class="table-scroll-wrapper" id="tableScrollWrapper" style="display: none;">
+        <table class="hero-table" id="studentDataTable">
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Non-Intrusive Floating Live Status Bar (Bottom Left) -->
+  <div class="floating-status-bar" id="floatingStatusBar" onclick="toggleActivityDrawer()">
+    <div class="ticker-pulse"></div>
+    <div class="ticker-text" id="floatingStatusText">Portal Ready &bull; Waiting for action</div>
+    <div class="ticker-action">Open Logs &rarr;</div>
+  </div>
+
+  <!-- Slide-Over Activity & Audit Drawer (Right Side) -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="toggleActivityDrawer()"></div>
+  <aside class="activity-drawer" id="activityDrawer">
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <div class="drawer-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+        </div>
+        <div>
+          <h3 class="drawer-title">Live Activity & Audit Log</h3>
+          <span class="drawer-subtitle">Real-time Playwright automation trace & portal responses</span>
+        </div>
+      </div>
+      <div class="drawer-controls">
+        <button class="drawer-btn" onclick="copyLogs()" title="Copy all logs to clipboard">Copy</button>
+        <button class="drawer-btn" onclick="clearLogs()" title="Clear logs">Clear</button>
+        <button class="drawer-close-btn" onclick="toggleActivityDrawer()" title="Close Drawer">&times;</button>
+      </div>
+    </div>
+
+    <!-- Filter Bar for Drawer -->
+    <div class="drawer-filter-bar">
+      <button class="filter-chip active" onclick="filterLogs('ALL')">All</button>
+      <button class="filter-chip" onclick="filterLogs('ACTION')">Actions</button>
+      <button class="filter-chip" onclick="filterLogs('SUCCESS')">Success</button>
+      <button class="filter-chip" onclick="filterLogs('ERROR')">Errors</button>
+    </div>
+
+    <!-- Log Stream Container -->
+    <div class="drawer-body" id="terminalBody">
+      <!-- Real-time entries dynamically inserted here -->
+    </div>
+  </aside>
+
+  <!-- Toast Notification System -->
+  <div class="toast-shelf" id="toastShelf">
+    <div class="toast" id="toastNotification">
+      <div class="toast-icon" id="toastIcon">&#10003;</div>
+      <div class="toast-content" id="toastMessage">Notification</div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

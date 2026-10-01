@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Embeddable Widget Testbed & Demo | RVS SAH</title>
+  <style>
+    :root {
+      --primary: #0057FF;
+      --porcelain: #F8F7F4;
+      --dark: #0F172A;
+      --border: #DCD8CB;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #F1EFEA; color: var(--dark); padding: 24px;
+    }
+    .demo-header {
+      max-width: 1100px; margin: 0 auto 20px auto; display: flex;
+      justify-content: space-between; align-items: center;
+      background: #fff; padding: 16px 24px; border-radius: 12px; border: 1px solid var(--border);
+    }
+    .brand-title { font-size: 18px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; gap: 12px; }
+    .nav-btn {
+      text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
+      background: var(--porcelain); color: var(--dark); border: 1px solid var(--border);
+    }
+    .nav-btn.primary { background: var(--primary); color: #fff; border: none; }
+    .demo-container {
+      max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .card {
+      background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .card-subtitle { font-size: 13px; color: #64748B; margin-bottom: 18px; line-height: 1.4; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+    .field input {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px;
+    }
+    .btn-import {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--primary); color: #fff; border: none; padding: 12px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+    }
+    .btn-import:hover { background: #0045D6; }
+    .mode-toggles { display: flex; gap: 10px; margin-bottom: 16px; }
+    .mode-pill {
+      padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--border); background: var(--porcelain);
+    }
+    .mode-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .json-viewer {
+      background: #0F172A; color: #38BDF8; font-family: monospace; font-size: 12px;
+      padding: 16px; border-radius: 8px; max-height: 480px; overflow-y: auto; white-space: pre-wrap;
+    }
+    #inline-widget-container { margin-top: 14px; }
+  </style>
+</head>
+<body>
+
+  <header class="demo-header">
+    <div class="brand-title">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+      </svg>
+      <span>RVS SAH Platform</span>
+    </div>
+    <div class="nav-links">
+      <a href="/admin/" target="_blank" class="nav-btn primary">Django Admin &rarr;</a>
+      <a href="/widget/docs/" class="nav-btn">API Documentation</a>
+    </div>
+  </header>
+
+  <main class="demo-container">
+    <!-- Left Column: Simulated School ERP Integration -->
+    <div class="card">
+      <h2 class="card-title">Simulated Client Website (ERP Integration)</h2>
+      <p class="card-subtitle">
+        This demonstrates how an external school website or ERP embeds the <code>widget.js</code> component with a single script tag and API key.
+      </p>
+
+      <div class="field">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <label for="demoApiKey" style="margin:0;">Client API Key (Bearer Token):</label>
+          <div style="display:flex; gap:12px;">
+            <button type="button" onclick="setDemoKey()" style="background:none; border:none; color:var(--primary); font-size:12px; font-weight:600; cursor:pointer;">Demo Key (demo_school)</button>
+            <button type="button" onclick="setGauravKey()" style="background:none; border:none; color:var(--primary); font-size:12px; font-weight:600; cursor:pointer;">Gaurav's Key</button>
+          </div>
+        </div>
+        <input type="text" id="demoApiKey" placeholder="Enter your sk_live_... key from Django Admin" value="sk_live_6acv8fHhGrQTPQfVePKOYn_Yy1Wx8I3pRE75a4AwhF0">
+        <small style="color: #64748B; font-size: 11px; margin-top: 4px; display: block;">
+          Active Demo Key pre-filled. You can also generate your own keys in <a href="/admin/accounts/apikey/" target="_blank">Django Admin</a>.
+        </small>
+      </div>
+
+      <div class="mode-toggles">
+        <span class="mode-pill active" id="pillModal" onclick="setMode('modal')">Modal Popup Mode</span>
+        <span class="mode-pill" id="pillInline" onclick="setMode('inline')">Inline Container Mode</span>
+      </div>
+
+      <div id="modal-controls">
+        <button class="btn-import" id="rajpsp-import-trigger">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          </svg>
+          <span>Import Students with RVS SAH</span>
+        </button>
+      </div>
+
+      <!-- Container for inline mode -->
+      <div id="inline-widget-container" style="display: none;"></div>
+    </div>
+
+    <!-- Right Column: Extracted Data Payload Receiver -->
+    <div class="card">
+      <h2 class="card-title">Live Client Callback Payload (JSON)</h2>
+      <p class="card-subtitle">
+        When extraction completes, the widget fires <code>onSuccess(payload)</code> passing the clean JSON student data directly into your app.
+      </p>
+      <div class="json-viewer" id="jsonOutput">// Waiting for RVS SAH callback...
+// Click "Import Students with RVS SAH" to test live extraction.
+      </div>
+    </div>
+  </main>
+
+  <!-- Embed the Widget SDK with cache-busting timestamp -->
+  <script src="/static/widget/widget.js?v={{ build_timestamp }}"></script>
+
+  <script>
+    let currentMode = 'modal';
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('pillModal').classList.toggle('active', mode === 'modal');
+      document.getElementById('pillInline').classList.toggle('active', mode === 'inline');
+
+      if (mode === 'inline') {
+        document.getElementById('modal-controls').style.display = 'none';
+        document.getElementById('inline-widget-container').style.display = 'block';
+        initWidget();
+      } else {
+        document.getElementById('modal-controls').style.display = 'block';
+        document.getElementById('inline-widget-container').style.display = 'none';
+        document.getElementById('inline-widget-container').innerHTML = '';
+        initWidget();
+      }
+    }
+
+    function initWidget() {
+      const apiKey = document.getElementById('demoApiKey').value.trim() || 'demo_key';
+      (window.RVSSAHWidget || window.RajPSPWidget).init({
+        apiKey: apiKey,
+        triggerElement: '#rajpsp-import-trigger',
+        mode: currentMode,
+        container: '#inline-widget-container',
+        onSuccess: function(data) {
+          console.log('[Client Application Received Data]:', data);
+          document.getElementById('jsonOutput').innerText = JSON.stringify(data, null, 2);
+          alert('Success! Received ' + (data.count || 0) + ' student records via onSuccess() callback.');
+        },
+        onError: function(err) {
+          console.error('[Widget Error]:', err);
+          document.getElementById('jsonOutput').innerText = '// Error: ' + err.message;
+        }
+      });
+    }
+
+    function setDemoKey() {
+      document.getElementById('demoApiKey').value = 'sk_live_6acv8fHhGrQTPQfVePKOYn_Yy1Wx8I3pRE75a4AwhF0';
+      initWidget();
+    }
+
+    function setGauravKey() {
+      document.getElementById('demoApiKey').value = 'sk_live_Gaurav_TestToken_2026_SecureKey';
+      initWidget();
+    }
+
+    // Re-initialize when API key changes
+    document.getElementById('demoApiKey').addEventListener('input', initWidget);
+    initWidget();
+  </script>
+</body>
+</html>

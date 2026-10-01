@@ -1,0 +1,66 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+ENV*/
+
+# Django / SQLite Database & Migrations cache
+*.sqlite3
+*.db
+staticfiles/
+
+# Temp exports & Scraper runtime outputs
+temp_exports/
+*.log
+
+# Debug and temporary verification files
+debug_*.py
+debug_*.png
+verification_*.png
+verify_*.py
+inspect_*.py
+test_fake_key.py
+
+# Playwright cache & screenshots
+.playwright/
+test-results/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo

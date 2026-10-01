@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer REST API & Widget Documentation | RVS SAH</title>
+  <style>
+    :root {
+      --primary: #0057FF;
+      --primary-hover: #0045D6;
+      --porcelain: #F8F7F4;
+      --dark: #0F172A;
+      --border: #DCD8CB;
+      --code-bg: #0F172A;
+      --accent-green: #10B981;
+      --purple: #8B5CF6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--porcelain); color: var(--dark); line-height: 1.6; padding: 24px;
+    }
+    .docs-wrap {
+      max-width: 1040px; margin: 0 auto; background: #fff; border-radius: 14px;
+      border: 1px solid var(--border); padding: 36px 48px; box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    }
+    .nav-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .nav-left, .nav-right { display: flex; align-items: center; gap: 12px; }
+    .btn-link {
+      text-decoration: none; font-size: 13px; font-weight: 600; color: var(--primary);
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .btn-link:hover { text-decoration: underline; }
+    .badge-pill {
+      background: #EFF6FF; color: var(--primary); border: 1px solid #BFDBFE;
+      padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 700;
+    }
+
+    h1 { font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+    h2 { font-size: 19px; font-weight: 700; margin-top: 32px; margin-bottom: 12px; border-bottom: 2px solid var(--porcelain); padding-bottom: 6px; }
+    h3 { font-size: 15px; font-weight: 600; margin-top: 18px; margin-bottom: 8px; color: #334155; }
+    p, li { font-size: 14px; color: #475569; margin-bottom: 10px; }
+    ul, ol { padding-left: 20px; margin-bottom: 14px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: #F1EFEA; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #D946EF; }
+
+    /* AI Supercharger Hero Card */
+    .ai-hero-card {
+      background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+      border: 1px solid #BFDBFE; border-radius: 12px; padding: 24px 28px;
+      margin: 24px 0 32px 0; box-shadow: 0 4px 16px rgba(0, 87, 255, 0.05);
+    }
+    .ai-header-row {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 12px;
+    }
+    .ai-title-wrap { display: flex; align-items: center; gap: 10px; }
+    .ai-badge {
+      background: var(--primary); color: #fff; font-size: 11px; font-weight: 700;
+      padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .ai-title { font-size: 18px; font-weight: 800; color: #1E3A8A; }
+    .ai-desc { font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.5; }
+    .btn-copy-ai {
+      background: var(--primary); color: #fff; border: none; padding: 10px 20px;
+      border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 87, 255, 0.25);
+    }
+    .btn-copy-ai:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-copy-ai.copied { background: #059669; }
+
+    .ai-prompt-box {
+      background: #0F172A; border-radius: 8px; padding: 16px;
+      color: #94A3B8; font-family: monospace; font-size: 12px;
+      line-height: 1.6; max-height: 160px; overflow-y: auto; white-space: pre-wrap;
+      border: 1px solid #334155; position: relative;
+    }
+
+    /* Framework Tabs */
+    .tab-bar {
+      display: flex; gap: 6px; border-bottom: 2px solid #E2E8F0; margin-bottom: 16px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 10px 16px; border: none; background: none; font-size: 13px;
+      font-weight: 600; color: #64748B; cursor: pointer; border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px;
+    }
+    .tab-btn:hover { color: var(--primary); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Code Snippet Blocks */
+    .code-container {
+      position: relative; margin-bottom: 20px;
+    }
+    pre {
+      background: var(--code-bg); color: #E2E8F0; padding: 16px 20px;
+      border-radius: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px; overflow-x: auto; line-height: 1.5; border: 1px solid #1E293B;
+    }
+    .btn-copy-code {
+      position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.1);
+      color: #E2E8F0; border: 1px solid rgba(255, 255, 255, 0.2); padding: 5px 10px;
+      border-radius: 5px; font-size: 11px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-copy-code:hover { background: rgba(255, 255, 255, 0.2); color: #fff; }
+    .btn-copy-code.copied { background: #059669; color: #fff; border-color: #059669; }
+
+    /* Table Specifications */
+    .table-spec { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+    .table-spec th { background: #F8F7F4; border: 1px solid var(--border); padding: 10px 14px; text-align: left; }
+    .table-spec td { border: 1px solid var(--border); padding: 10px 14px; }
+    .endpoint-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-right: 8px; }
+    .badge-post { background: #10B981; color: #fff; }
+    .badge-get { background: var(--primary); color: #fff; }
+
+    .privacy-card {
+      background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 10px;
+      padding: 20px 24px; margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="docs-wrap">
+    <div class="nav-bar">
+      <div class="nav-left">
+        <a href="/widget/demo/" class="btn-link">&larr; Back to Interactive Demo</a>
+      </div>
+      <div class="nav-right">
+        <a href="/llms.txt" target="_blank" class="badge-pill">🤖 llms.txt (For AI Agents)</a>
+        <a href="/admin/" target="_blank" class="btn-link">Django Admin Panel &rarr;</a>
+      </div>
+    </div>
+
+    <h1>RVS SAH Developer REST API & Embeddable Widget</h1>
+    <p>
+      The <strong>RVS SAH</strong> platform provides external school portals, ERP systems, and web applications with secure, automated, pass-through student profile data extraction from Rajasthan Private School Portal (<code>rajpsp.rajasthan.gov.in</code>).
+    </p>
+
+    <!-- AI SUPERCHARGER 1: 1-CLICK PROMPT FOR AI ASSISTANTS -->
+    <div class="ai-hero-card">
+      <div class="ai-header-row">
+        <div class="ai-title-wrap">
+          <span class="ai-badge">AI Integration</span>
+          <span class="ai-title">Building with Cursor, ChatGPT, Claude, v0, or Bolt?</span>
+        </div>
+        <button type="button" class="btn-copy-ai" id="btnCopyPrompt" onclick="copyAiPrompt()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span id="copyPromptText">Copy 1-Click Prompt for AI</span>
+        </button>
+      </div>
+      <p class="ai-desc">
+        Click above to copy the complete prompt engineered instructions. Then simply paste it into your AI coding assistant (Cursor, Claude, ChatGPT, v0.dev, Bolt.new, Lovable, or Windsurf). The AI will immediately write and wire up the import functionality inside your project.
+      </p>
+      <div class="ai-prompt-box" id="aiPromptContent">Integrate the RVS SAH Student Import Assistant into my application:
+
+1. Target Goal:
+Allow school admins to click an "Import Students" button, authenticate against the Rajasthan Private School Portal (rajpsp.rajasthan.gov.in), choose class/session, and extract student records directly into my application.
+
+2. SDK Script:
+Include: &lt;script src="http://localhost:8085/static/widget/widget.js"&gt;&lt;/script&gt;
+
+3. Initialization Code:
+RVSSAHWidget.init({
+  apiKey: "sk_live_6acv8fHhGrQTPQfVePKOYn_Yy1Wx8I3pRE75a4AwhF0",
+  triggerElement: "#import-students-btn",
+  mode: "modal",
+  onSuccess: function(data) {
+    // data.count (integer number of students selected)
+    // data.headers (array of active column names)
+    // data.students (2D array of student records)
+    console.log("Imported Students:", data.students);
+    // Wire data.students into my app's state or database save function
+  },
+  onError: function(err) {
+    console.error("RVS SAH Error:", err.message);
+  }
+});
+
+4. Machine-Readable Documentation:
+Full specification is available at: http://localhost:8085/llms.txt</div>
+    </div>
+
+    <!-- AI SUPERCHARGER 2: FRAMEWORK-SPECIFIC CODE TABS -->
+    <h2>2. Drop-In Code by Framework</h2>
+    <p>Select your framework to view copy-ready integration snippets:</p>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('tab-html')">🌐 Vanilla HTML / JS / PHP</button>
+      <button class="tab-btn" onclick="switchTab('tab-react')">⚛️ React & Next.js (TypeScript)</button>
+      <button class="tab-btn" onclick="switchTab('tab-vue')">💚 Vue 3 / Nuxt</button>
+      <button class="tab-btn" onclick="switchTab('tab-python')">🐍 Python (Headless REST)</button>
+      <button class="tab-btn" onclick="switchTab('tab-node')">🟢 Node.js (Headless REST)</button>
+    </div>
+
+    <!-- TAB 1: HTML / JS -->
+    <div class="tab-content active" id="tab-html">
+      <p>Works in WordPress, PHP, Laravel, Django templates, and static websites with a single script tag:</p>
+      <div class="code-container">
+        <button class="btn-copy-code" onclick="copySnippet('code-html', this)">Copy Code</button>
+        <pre><code id="code-html">&lt;!-- 1. Include RVS SAH SDK --&gt;
+&lt;script src="http://localhost:8085/static/widget/widget.js"&gt;&lt;/script&gt;
+
+&lt;!-- 2. Trigger Button --&gt;
+&lt;button id="import-students-btn" type="button" class="btn btn-primary"&gt;
+  Import Students with RVS SAH
+&lt;/button&gt;
+
+&lt;!-- 3. Initialize SDK --&gt;
+&lt;script&gt;
+  RVSSAHWidget.init({
+    apiKey: "sk_live_6acv8fHhGrQTPQfVePKOYn_Yy1Wx8I3pRE75a4AwhF0",
+    triggerElement: "#import-students-btn",
+    mode: "modal", // "modal" (popup) or "inline" (container: "#my-container")
+    onSuccess: function(result) {
+      console.log("Imported " + result.count + " students:", result.students);
+      alert("Successfully extracted " + result.count + " student records!");
+    },
+    onError: function(err) {
+      console.error("RVS SAH Error:", err.message);
+    }
+  });
+&lt;/script&gt;</code></pre>
+      </div>
+    </div>
+
+    <!-- TAB 2: REACT / NEXT.JS -->
+    <div class="tab-content" id="tab-react">
+      <p>Drop-in component for <strong>v0.dev, Bolt.new, Lovable, Next.js (App / Pages router), and Vite React</strong>:</p>
+      <div class="code-container">
+        <button class="btn-copy-code" onclick="copySnippet('code-react', this)">Copy Code</button>
+        <pre><code id="code-react">'use client';
+
+import React, { useEffect } from 'react';
+
+declare global {
+  interface Window {
+    RVSSAHWidget: any;
+  }
+}
+
+interface RvsSahButtonProps {
+  apiKey: string;
+  onSuccess: (data: { count: number; headers: string[]; students: string[][] }) => void;
+  className?: string;
+  buttonText?: string;
+}
+
+export function RvsSahImportButton({
+  apiKey,
+  onSuccess,
+  className = "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition",
+  buttonText = "Import Students with RVS SAH"
+}: RvsSahButtonProps) {
+  useEffect(() => {
+    const scriptId = 'rvs-sah-sdk';
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'http://localhost:8085/static/widget/widget.js';
+      script.async = true;
+      script.onload = () => bindWidget();
+      document.body.appendChild(script);
+    } else {
+      bindWidget();
+    }
+
+    function bindWidget() {
+      if (window.RVSSAHWidget) {
+        window.RVSSAHWidget.init({
+          apiKey: apiKey,
+          triggerElement: '#rvs-sah-import-trigger',
+          mode: 'modal',
+          onSuccess: (res: any) => onSuccess(res),
+          onError: (err: any) => console.error('RVS SAH Error:', err)
+        });
+      }
+    }
+  }, [apiKey, onSuccess]);
+
+  return (
+    &lt;button id="rvs-sah-import-trigger" type="button" className={className}&gt;
+      {buttonText}
+    &lt;/button&gt;
+  );
+}</code></pre>
+      </div>
+    </div>
+
+    <!-- TAB 3: VUE 3 / NUXT -->
+    <div class="tab-content" id="tab-vue">
+      <p>Vue 3 Composition API component for Nuxt 3 and Vite Vue projects:</p>
+      <div class="code-container">
+        <button class="btn-copy-code" onclick="copySnippet('code-vue', this)">Copy Code</button>
+        <pre><code id="code-vue">&lt;template&gt;
+  &lt;button id="rvs-sah-vue-trigger" type="button" class="rvs-import-btn"&gt;
+    Import Students with RVS SAH
+  &lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { onMounted } from 'vue';
+
+const props = defineProps({
+  apiKey: { type: String, required: true }
+});
+
+const emit = defineEmits(['success', 'error']);
+
+onMounted(() => {
+  const scriptId = 'rvs-sah-sdk';
+  if (!document.getElementById(scriptId)) {
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'http://localhost:8085/static/widget/widget.js';
+    script.async = true;
+    script.onload = initWidget;
+    document.body.appendChild(script);
+  } else {
+    initWidget();
+  }
+
+  function initWidget() {
+    if (window.RVSSAHWidget) {
+      window.RVSSAHWidget.init({
+        apiKey: props.apiKey,
+        triggerElement: '#rvs-sah-vue-trigger',
+        mode: 'modal',
+        onSuccess: (data) => emit('success', data),
+        onError: (err) => emit('error', err)
+      });
+    }
+  }
+});
+&lt;/script&gt;</code></pre>
+      </div>
+    </div>
+
+    <!-- TAB 4: PYTHON REST API -->
+    <div class="tab-content" id="tab-python">
+      <p>Direct headless Python backend automation using <code>requests</code>:</p>
+      <div class="code-container">
+        <button class="btn-copy-code" onclick="copySnippet('code-python', this)">Copy Code</button>
+        <pre><code id="code-python">import requests
+
+API_KEY = "sk_live_6acv8fHhGrQTPQfVePKOYn_Yy1Wx8I3pRE75a4AwhF0"
+BASE_URL = "http://localhost:8085/api/v1"
+HEADERS = {"Authorization": f"Bearer {API_KEY}"}
+
+# Step 1: Initialize ephemeral browser session & get live CAPTCHA
+session_res = requests.post(f"{BASE_URL}/session/start", headers=HEADERS).json()
+session_id = session_res["session_id"]
+captcha_b64 = session_res["captcha_b64"]
+
+# Step 2: Submit school credentials & solved CAPTCHA
+login_res = requests.post(f"{BASE_URL}/session/login", headers=HEADERS, json={
+    "session_id": session_id,
+    "username": "P25814",
+    "password": "YourPassword",
+    "captcha": "9egB77"
+}).json()
+
+# Step 3: Extract student records for selected class
+students_res = requests.post(f"{BASE_URL}/session/fetch-students", headers=HEADERS, json={
+    "session_id": session_id,
+    "school_code": "P25814",
+    "session_val": "2024-2025",
+    "class_val": "1"
+}).json()
+
+print(f"Extracted {students_res['count']} students:")
+for row in students_res['rows']:
+    print(row)
+
+# Step 4: Destroy session
+requests.post(f"{BASE_URL}/session/close", headers=HEADERS, json={"session_id": session_id})</code></pre>
+      </div>
+    </div>
+
+    <!-- TAB 5: NODE.JS REST API -->
+    <div class="tab-content" id="tab-node">
+      <p>Direct headless Node.js backend automation using <code>axios</code>:</p>
+      <div class="code-container">
+        <button class="btn-copy-code" onclick="copySnippet('code-node', this)">Copy Code</button>
+        <pre><code id="code-node">const axios = require('axios');
+
+const API_KEY = 'sk_live_6acv8fHhGrQTPQfVePKOYn_Yy1Wx8I3pRE75a4AwhF0';
+const client = axios.create({
+  baseURL: 'http://localhost:8085/api/v1',
+  headers: { 'Authorization': `Bearer ${API_KEY}` }
+});
+
+async function runImport() {
+  // Step 1: Start Session
+  const { data: s } = await client.post('/session/start');
+  const sessionId = s.session_id;
+
+  // Step 2: Authenticate
+  await client.post('/session/login', {
+    session_id: sessionId,
+    username: 'P25814',
+    password: 'YourPassword',
+    captcha: '9egB77'
+  });
+
+  // Step 3: Fetch Students
+  const { data: records } = await client.post('/session/fetch-students', {
+    session_id: sessionId,
+    school_code: 'P25814',
+    session_val: '2024-2025',
+    class_val: '1'
+  });
+
+  console.log(`Extracted ${records.count} students:`, records.rows);
+
+  // Step 4: Close Session
+  await client.post('/session/close', { session_id: sessionId });
+}
+
+runImport().catch(console.error);</code></pre>
+      </div>
+    </div>
+
+    <!-- SECTION 3: REST API ENDPOINTS -->
+    <h2>3. Headless REST API Endpoints Specification</h2>
+    <table class="table-spec">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Endpoint</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="endpoint-badge badge-get">GET</span></td>
+          <td><code>/api/v1/account/status</code></td>
+          <td>Check current plan, monthly request quota, and remaining credits.</td>
+        </tr>
+        <tr>
+          <td><span class="endpoint-badge badge-post">POST</span></td>
+          <td><code>/api/v1/session/start</code></td>
+          <td>Create an isolated browser context and receive a base64 live CAPTCHA challenge.</td>
+        </tr>
+        <tr>
+          <td><span class="endpoint-badge badge-post">POST</span></td>
+          <td><code>/api/v1/session/refresh-captcha</code></td>
+          <td>Refresh the live CAPTCHA image for an active session.</td>
+        </tr>
+        <tr>
+          <td><span class="endpoint-badge badge-post">POST</span></td>
+          <td><code>/api/v1/session/login</code></td>
+          <td>Authenticate school credentials & CAPTCHA. Returns available Sessions and Classes.</td>
+        </tr>
+        <tr>
+          <td><span class="endpoint-badge badge-post">POST</span></td>
+          <td><code>/api/v1/session/fetch-students</code></td>
+          <td>Extract student records for selected Session and Class. Deducts 1 quota credit.</td>
+        </tr>
+        <tr>
+          <td><span class="endpoint-badge badge-post">POST</span></td>
+          <td><code>/api/v1/automated/fetch-students</code></td>
+          <td><strong>Enterprise Tier</strong>: Single-call automated sync using local AI/OCR captcha solving.</td>
+        </tr>
+        <tr>
+          <td><span class="endpoint-badge badge-post">POST</span></td>
+          <td><code>/api/v1/session/close</code></td>
+          <td>Explicitly release and destroy ephemeral browser context.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- SECTION 4: DATA PRIVACY & COMPLIANCE -->
+    <div class="privacy-card">
+      <h2 style="margin-top:0; border:none; padding:0;">🛡️ Data Privacy & Zero-Retention Compliance</h2>
+      <p>
+        The RVS SAH platform is strictly a <strong>Pass-Through Data Pipeline</strong>. Student personal data (names, Aadhaar numbers, parents' details, mobile numbers) are <strong>never stored</strong> on SaaS servers. Extracted records are delivered straight to the client API response, fulfilling Indian Digital Personal Data Protection (DPDP) Act requirements.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Tab Switching Functionality
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      event.currentTarget.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // 1-Click Copy AI Prompt
+    function copyAiPrompt() {
+      const text = document.getElementById('aiPromptContent').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('btnCopyPrompt');
+        const textSpan = document.getElementById('copyPromptText');
+        btn.classList.add('copied');
+        textSpan.innerText = '✓ Prompt Copied to Clipboard!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          textSpan.innerText = 'Copy 1-Click Prompt for AI';
+        }, 3000);
+      });
+    }
+
+    // Copy Code Snippets
+    function copySnippet(elementId, btnElement) {
+      const code = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const origText = btnElement.innerText;
+        btnElement.classList.add('copied');
+        btnElement.innerText = '✓ Copied!';
+        setTimeout(() => {
+          btnElement.classList.remove('copied');
+          btnElement.innerText = origText;
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
